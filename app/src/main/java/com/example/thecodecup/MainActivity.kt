@@ -4,14 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -125,6 +123,8 @@ fun OpeningScreen(onFinished: () -> Unit) {
 @Composable
 fun OpeningScreenPreview() {
     TheCodeCupTheme {
+        // Giúp bạn có thể nhìn thấy giao diện màn hình chào ngay trong tab "Design" của Android Studio
+        // mà không cần mất công bấm nút chạy máy ảo.
         OpeningScreen(onFinished = {})
     }
 }
