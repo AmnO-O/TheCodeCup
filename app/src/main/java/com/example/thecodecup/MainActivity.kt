@@ -49,6 +49,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainContent() {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        // Box dùng để căn chỉnh chữ vào chính giữa màn hình sau khi đã trừ đi phần viền hệ thống (innerPadding)
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -63,6 +64,9 @@ fun MainContent() {
 @Composable
 fun OpeningScreen(onFinished: () -> Unit) {
     // Show for 4 seconds to let animation play
+    // 1. Bộ đếm thời gian: Khi màn hình này xuất hiện (Unit), ép nó đợi đúng 4 giây (4000ms)
+    // để người dùng kịp ngắm hiệu ứng khói, sau đó gọi hàm onFinished() để chuyển sang MainContent.
+
     LaunchedEffect(Unit) {
         delay(4000)
         onFinished()
@@ -93,9 +97,6 @@ fun OpeningScreen(onFinished: () -> Unit) {
                 modifier = Modifier.height(240.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                // Smoke Animation Layers
-                SmokeAnimation()
-                
                 // Cup Icon
                 Image(
                     painter = painterResource(id = R.drawable.splash_cup),
@@ -119,47 +120,6 @@ fun OpeningScreen(onFinished: () -> Unit) {
     }
 }
 
-@Composable
-fun SmokeAnimation() {
-    val infiniteTransition = rememberInfiniteTransition(label = "smokeTransition")
-    
-    // Animate alpha of 3 different smoke layers
-    val alpha1 by infiniteTransition.animateFloat(
-        initialValue = 0.2f,
-        targetValue = 0.8f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1500, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ), label = "alpha1"
-    )
-
-    val alpha2 by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = LinearOutSlowInEasing, delayMillis = 300),
-            repeatMode = RepeatMode.Reverse
-        ), label = "alpha2"
-    )
-
-    val alpha3 by infiniteTransition.animateFloat(
-        initialValue = 0.1f,
-        targetValue = 0.9f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1800, easing = LinearEasing, delayMillis = 600),
-            repeatMode = RepeatMode.Reverse
-        ), label = "alpha3"
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(180.dp),
-        contentAlignment = Alignment.TopCenter
-    ) {
-
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
