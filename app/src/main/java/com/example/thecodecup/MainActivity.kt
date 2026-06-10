@@ -19,25 +19,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.compose.rememberNavController
+import com.example.thecodecup.ui.navigation.NavGraph
 import com.example.thecodecup.ui.theme.TheCodeCupTheme
 import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Install the system splash screen
         installSplashScreen()
-
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             TheCodeCupTheme {
-                // State to manage showing the Opening Screen (with smoke animation)
-                var showOpeningScreen by remember { mutableStateOf(true) }
-
-                if (showOpeningScreen) {
-                    OpeningScreen(onFinished = { showOpeningScreen = false })
-                } else {
-                    MainContent()
+                val navController = rememberNavController()
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    NavGraph(navController = navController)
                 }
             }
         }
@@ -45,33 +44,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainContent() {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        // Box dùng để căn chỉnh chữ vào chính giữa màn hình sau khi đã trừ đi phần viền hệ thống (innerPadding)
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = "Welcome to The Code Cup!")
-        }
-    }
-}
-
-@Composable
 fun OpeningScreen(onFinished: () -> Unit) {
-    // Show for 4 seconds to let animation play
-    // 1. Bộ đếm thời gian: Khi màn hình này xuất hiện (Unit), ép nó đợi đúng 4 giây (4000ms)
-    // để người dùng kịp ngắm hiệu ứng khói, sau đó gọi hàm onFinished() để chuyển sang MainContent.
-
+    // Reduced delay for a snappier feel
     LaunchedEffect(Unit) {
-        delay(4000)
+        delay(2000)
         onFinished()
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // 1. Background Image
         Image(
             painter = painterResource(id = R.drawable.splash_background),
             contentDescription = null,
@@ -79,52 +59,38 @@ fun OpeningScreen(onFinished: () -> Unit) {
             contentScale = ContentScale.Crop
         )
 
-        // 2. Dark Overlay for better contrast
         Surface(
-            color = Color.Black.copy(alpha = 0.4f),
+            color = Color.Black.copy(alpha = 0.5f),
             modifier = Modifier.fillMaxSize()
         ) {}
 
-        // 3. Content (Smoke + Cup + Text)
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                modifier = Modifier.height(240.dp),
-                contentAlignment = Alignment.BottomCenter
-            ) {
-                // Cup Icon
-                Image(
-                    painter = painterResource(id = R.drawable.splash_cup),
-                    contentDescription = "Cup Icon",
-                    modifier = Modifier
-                        .size(150.dp)
-                        .padding(bottom = 10.dp)
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.splash_cup),
+                contentDescription = "Cup Icon",
+                modifier = Modifier.size(160.dp)
+            )
             
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Brand Name
             Text(
                 text = stringResource(id = R.string.app_name),
                 color = Color.White,
-                fontSize = 32.sp,
+                fontSize = 36.sp,
                 fontWeight = FontWeight.Bold
             )
         }
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun OpeningScreenPreview() {
     TheCodeCupTheme {
-        // Giúp bạn có thể nhìn thấy giao diện màn hình chào ngay trong tab "Design" của Android Studio
-        // mà không cần mất công bấm nút chạy máy ảo.
         OpeningScreen(onFinished = {})
     }
 }
